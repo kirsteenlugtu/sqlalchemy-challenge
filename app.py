@@ -42,7 +42,7 @@ def home():
         f"/api/v1.0/<start>/<end><br/>"
     ) 
 
-# Precipitaton
+# Precipitaton observations for a year
 @app.route("/api/v1.0/precipitation")
 def precip():
     session = Session(engine)
@@ -91,6 +91,34 @@ def temps():
     Temp_observations = dict(results)
 
     return jsonify(Temp_observations)
+
+# Temperatures in date range with specified start date 
+@app.route("/api/v1.0/<start>")
+def temp_data(start):
+    session = Session(engine)
+    tmax = session.query(func.max(Measurement.tobs)).filter(Measurement.date >= start).all()
+    tmin = session.query(func.min(Measurement.tobs)).filter(Measurement.date >= start).all()
+    tavg = session.query(func.avg(Measurement.tobs)).filter(Measurement.date >= start).all()
+
+    return (
+        f"Highest temperature observed in date range starting {start}: {tmax} degrees <br/>"
+        f"Lowest temperature observed in date range starting {start}: {tmin} degrees <br/>"
+        f"Average temperature observed in date range starting {start}: {tavg} degrees <br/>"
+    )
+
+# Temperatures in date range with specified start and end date
+@app.route("/api/v1.0/<start>/<end>")
+def temp_data_range(start, end):
+    session = Session(engine)
+    tmax = session.query(func.max(Measurement.tobs)).filter(Measurement.date >= start).filter(Measurement.date <= end).all()
+    tmin = session.query(func.min(Measurement.tobs)).filter(Measurement.date >= start).filter(Measurement.date <= end).all()
+    tavg = session.query(func.avg(Measurement.tobs)).filter(Measurement.date >= start).filter(Measurement.date <= end).all()
+
+    return (
+        f"Highest temperature observed from {start} to {end}: {tmax} degrees <br/>"
+        f"Lowest temperature observed from {start} to {end}: {tmin} degrees <br/>"
+        f"Average temperature observed from {start} to {end}: {tavg} degrees <br/>"
+    )
 
 
 
