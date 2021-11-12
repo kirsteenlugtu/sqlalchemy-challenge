@@ -50,11 +50,6 @@ def precip():
     precipResults = session.query(Measurement.date, Measurement.prcp).filter(Measurement.date >= prev_yr).all()
     session.close()
 
-    # yrPrecip = []
-    # for date, precip in precipResults:
-    #     precip_dict = {}
-    #     precip_dict["date"] = 
-
     precipResults = dict(precipResults)
 
     return jsonify(precipResults)
@@ -119,7 +114,6 @@ def temp_data_range(start, end):
         f"Lowest temperature observed from {start} to {end}: {tmin} degrees <br/>"
         f"Average temperature observed from {start} to {end}: {tavg} degrees <br/>"
     )
-
 
 
 if __name__ == "__main__":
